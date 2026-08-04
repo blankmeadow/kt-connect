@@ -163,6 +163,7 @@ func RecoverOriginalService(svcName, namespace string) {
 		}
 		svc.Spec.Selector = selector
 		delete(svc.Annotations, util.KtSelector)
+		delete(svc.Annotations, util.KtUser)
 		if _, err = cluster.Ins().UpdateService(svc); err != nil {
 			log.Error().Err(err).Msgf("Failed to recover selector of original service %s", svcName)
 		}

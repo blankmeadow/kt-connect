@@ -81,6 +81,7 @@ func Recover(serviceName string) error {
 		log.Debug().Msgf("Recovering selector to %v", selector)
 		svc.Spec.Selector = selector
 		delete(svc.Annotations, util.KtSelector)
+		delete(svc.Annotations, util.KtUser)
 		if targetRole == util.RoleRouter {
 			log.Info().Msgf("Service %s is meshed, recovering", serviceName)
 			return recover.HandleMeshedByAutoService(svc, targetDeployment, targetPod)

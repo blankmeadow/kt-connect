@@ -135,6 +135,10 @@ func UpdateServiceSelector(svcName, namespace string, selector map[string]string
 
 	if isServiceChanged(svc, selector, marshaledSelector) {
 		svc.Spec.Selector = selector
+		if opt.Store.Component == util.ComponentExchange {
+			// record which user is exchanging this service, will be removed on recover
+			svc.Annotations = util.MapPut(svc.Annotations, util.KtUser, util.GetLocalUserName())
+		}
 		if _, err = cluster.Ins().UpdateService(svc); err != nil {
 			return err
 		}
