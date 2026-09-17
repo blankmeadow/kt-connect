@@ -112,6 +112,21 @@ func createPod(metaAndSpec *PodMetaAndSpec) *coreV1.Pod {
 		pod.Spec.NodeSelector = util.String2Map(opt.Get().Global.NodeSelector)
 	}
 
+	// shadow, router and rectifier pod only run on amd64 nodes
+	pod.Spec.Affinity = &coreV1.Affinity{
+		NodeAffinity: &coreV1.NodeAffinity{
+			RequiredDuringSchedulingIgnoredDuringExecution: &coreV1.NodeSelector{
+				NodeSelectorTerms: []coreV1.NodeSelectorTerm{{
+					MatchExpressions: []coreV1.NodeSelectorRequirement{{
+						Key:      "nodetype.cks.io/arch",
+						Operator: coreV1.NodeSelectorOpIn,
+						Values:   []string{"amd64"},
+					}},
+				}},
+			},
+		},
+	}
+
 	return pod
 }
 
